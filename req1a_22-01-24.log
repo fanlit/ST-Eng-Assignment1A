@@ -1,0 +1,5 @@
+
+#################### 1A. 22-01-24 11:32:11 AM #########################
+Subject File: /etc/ssh/sshd_config
+Key: PermitRootLogin
+Req 1A Testcase 6: FAIL: Non-compliant value.

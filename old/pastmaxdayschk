@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#########
+# Setup #
+#########
+file=~/login.defs.bak 
+failCount=0
+
+#########################################
+# Failure: /etc/login.defs non-existent #
+#########################################
+
+echo "Checking existence of $file" | tee ./PassMaxDaysError.log
+if [ ! -f $file ]
+then
+	echo "    FAILURE: $file does not exist" | tee ./PassMaxDaysError.log
+	exit 1
+elif [ ! -r $file ]
+then
+	echo "    FAILURE: $file is not readable" | tee ./PassMaxDaysError.log
+	exit 1
+else
+	echo "    PASS"
+fi
+
+###########################################################
+# Failure: Invalid value (value contains unexpected chars)#
+###########################################################
+echo "Checking for invalid value(s)" | tee ./PassMaxDaysError.log
+
+############################
+# Failure: Multiple values #
+############################
+
+intCmdOutLC=$(grep -E "^\s*PASS_MAX_DAYS\s(-*[0-9]+\s-*[0-9]+\s*)+$" $file | wc -l) > /dev/null
+echo "Checking multiple PASS_MAX_DAYS key" | tee ./PassMaxDaysError.log
+if [ "$intCmdOutLC" != 0 ]
+then
+	echo "    FAILURE: Multiple values detected!" | tee ./PassMaxDaysError.log
+	exit 1
+else
+	echo "    PASS"
+fi

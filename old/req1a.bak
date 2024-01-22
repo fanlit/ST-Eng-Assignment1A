@@ -1,0 +1,48 @@
+#!/bin/bash
+# logfile is stored as param: $1
+
+#########
+# Setup #
+#########
+
+SUBJFILE='/etc/ssh/sshd_config'
+KEY='PermitRootLogin'
+
+##############################
+# 1: Check SSH service start #
+##############################
+$(which systemctl) start sshd &> /dev/null
+if ["$?" -ne 0 ]
+then
+	echo "Req 1A Testcase 1: SSH service cannot be started" > $1
+fi
+
+####################
+# 2: Key not found #
+####################
+if [ $(grep '^\s*PermitRootLogin\s*' $SUBJFILE | wc -l) -eq 0 ]
+then
+	echo "Req 1A Testcase 2: $KEY cannot be found in $SUBJFILE" > $1
+	exit 1
+fi
+
+##########################
+# 3: No associated value #
+##########################
+CMDOUT=$(grep '^\s*PermitRootLogin\s*' $SUBJFILE | head -1 | grep '^\s*PermitRootLogin\s*$' | wc -l)
+if [ $CMDOUT -ne 0 ]
+then
+	echo "Req 1A Testcase 3: No value associated with $KEY in $SUBJFILE" > $1
+	exit 1
+fi
+
+####################
+# 4. Invalid value #
+####################
+
+CMDOUT=$(grep -E '^\s*PermitRootLogin\s+' $SUBJFILE | head -1 | grep -P '^\s*PermitRootLogin\s+((?!yes|prohibit-password|forced-commands-only|no)+\s*)+' | wc -l)
+if [ $CMDOUT -ne 0  ]
+then
+	echo "Req 1A Testcase 4: Invalid key associated with $KEY in $SUBJFILE" > $1
+	exit 1
+fi

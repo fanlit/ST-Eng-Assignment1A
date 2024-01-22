@@ -1,0 +1,37 @@
+
+
+#################### 1C. 22-01-24 09:05:25 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+Req 1C Testcase 6: Invalid key.
+
+#################### 1C. 22-01-24 09:09:59 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+Req 1C: PASS
+
+#################### 1C. 22-01-24 09:11:41 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+
+#################### 1C. 22-01-24 09:13:44 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+
+#################### 1C. 22-01-24 09:15:10 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+
+#################### 1C. 22-01-24 09:15:55 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+Req 1C: PASS
+
+#################### 1C. 22-01-24 09:16:15 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+
+#################### 1C. 22-01-24 09:23:40 PM #########################
+Subject File: /etc/ssh/sshd_config
+Key: Protocol
+Req 1C Testcase 7: Non-compliant value.

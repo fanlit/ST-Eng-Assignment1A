@@ -1,0 +1,90 @@
+#!/bin/bash
+
+#########
+# Setup #
+#########
+
+DATETIME=$(date "+%d-%m-%y %r")
+SUBJFILE='/etc/ssh/sshd_config'
+KEY='Protocol'
+STDOUTLOGFILE="req1c_$(date "+%d-%m-%y").log"
+STARTFAIL=0
+REQ='1C'
+echo "" >> "$STDOUTLOGFILE"
+echo "#################### $REQ. $(date "+%d-%m-%y %r") #########################" >> "$STDOUTLOGFILE"
+echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
+echo "Key: $KEY" >> "$STDOUTLOGFILE"
+
+##############################
+# 1: Check SSH service start #
+##############################
+systemctl restart sshd &> /dev/null
+if [ "$?" -ne 0 ]
+then
+	echo "Req $REQ Testcase 1: SSH service cannot be started." >> "$STDOUTLOGFILE"
+	STARTFAIL=1
+fi
+
+#############################
+# 2: Subject File not Found #
+#############################
+find "$SUBJFILE" &> /dev/null
+if [ ! -f "$SUBJFILE" ]
+then
+        echo "Req $REQ Testcase 2: Subject file not found." >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+####################
+# 3: Key not found #
+####################
+if [ $( grep "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
+then
+	echo "Req $REQ Testcase 3: Key cannot be found." >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 4: No associated value #
+##########################
+CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep "^\s*$KEY\s*$" | wc -l)
+if [ "$CMDOUT" -ne 0 ]
+then
+	echo "Req $REQ Testcase 4: No value." >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+####################
+# 6. Invalid value #
+####################
+CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+[^12]\s*,?\s*[^12]?\s*" | wc -l)
+if [ "$CMDOUT" -ne 0  ]
+then
+	echo "Req $REQ Testcase 6: Invalid key." >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 7. Non-Compliant value #
+##########################
+CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+2\s*$" | wc -l)
+if [ ! "$CMDOUT" -ne 0  ]
+then
+        echo "Req $REQ Testcase 7: Non-compliant value." >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+######################
+# 8. Compliant value #
+######################
+CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+2\s*$" | wc -l)
+if [[ "$CMDOUT" -ne 0 && $STARTFAIL -ne 1 ]]
+then
+        echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"
+        exit 0
+fi
+
+if [ "$STARTFAIL" -eq 1 ]
+then
+	exit 1
+fi
