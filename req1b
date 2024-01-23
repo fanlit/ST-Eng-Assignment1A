@@ -38,7 +38,7 @@ fi
 ####################
 # 2: Key not found #
 ####################
-if [ $( grep "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
+if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
 	echo "Req $REQ Testcase 3: Key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
@@ -47,7 +47,7 @@ fi
 ##########################
 # 3: No associated value #
 ##########################
-CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep "^\s*$KEY\s*$" | wc -l)
+CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -i "^\s*$KEY\s*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
 	echo "Req $REQ Testcase 4: No value." >> "$STDOUTLOGFILE"
@@ -57,7 +57,7 @@ fi
 ######################
 # 4. Multiple values #
 ######################
-CMDOUT=$( grep -E "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -P "^\s*$KEY\s+.+\s+.+" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+.+\s+.+" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
         echo "Req $REQ Testcase 5: Multiple values." >> "$STDOUTLOGFILE"
@@ -67,7 +67,7 @@ fi
 ####################
 # 5. Invalid value #
 ####################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -P "^\s*$KEY\s+((?!yes|no)\s*)" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!yes|no)\s*)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
 	echo "Req $REQ Testcase 6: Invalid key." >> "$STDOUTLOGFILE"
@@ -77,7 +77,7 @@ fi
 ##########################
 # 6. Non-Compliant value #
 ##########################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -P "^\s*$KEY\s+((?!no)\s*)" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!no)\s*)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
         echo "Req $REQ Testcase 7: Non-compliant value." >> "$STDOUTLOGFILE"
@@ -87,7 +87,7 @@ fi
 ######################
 # 7. Compliant value #
 ######################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+no\s*$" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+no\s*$" | wc -l)
 if [[ "$CMDOUT" -ne 0 && $STARTFAIL -ne 1 ]]
 then
         echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"

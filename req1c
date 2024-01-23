@@ -37,7 +37,7 @@ fi
 ####################
 # 3: Key not found #
 ####################
-if [ $( grep "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
+if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
 	echo "Req $REQ Testcase 3: Key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
@@ -46,7 +46,7 @@ fi
 ##########################
 # 4: No associated value #
 ##########################
-CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep "^\s*$KEY\s*$" | wc -l)
+CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -i "^\s*$KEY\s*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
 	echo "Req $REQ Testcase 4: No value." >> "$STDOUTLOGFILE"
@@ -56,7 +56,7 @@ fi
 ####################
 # 6. Invalid value #
 ####################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+[^12]\s*,?\s*[^12]?\s*" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+[^12]\s*,?\s*[^12]?\s*" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
 	echo "Req $REQ Testcase 6: Invalid key." >> "$STDOUTLOGFILE"
@@ -66,7 +66,7 @@ fi
 ##########################
 # 7. Non-Compliant value #
 ##########################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+2\s*$" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*$" | wc -l)
 if [ ! "$CMDOUT" -ne 0  ]
 then
         echo "Req $REQ Testcase 7: Non-compliant value." >> "$STDOUTLOGFILE"
@@ -76,7 +76,7 @@ fi
 ######################
 # 8. Compliant value #
 ######################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -E "^\s*$KEY\s+2\s*$" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*$" | wc -l)
 if [[ "$CMDOUT" -ne 0 && $STARTFAIL -ne 1 ]]
 then
         echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"

@@ -1,0 +1,15 @@
+
+#################### 1D. 23-01-24 03:28:26 PM #########################
+Subject File: /etc/login.defs
+Key: PASS_MAX_DAYS
+Req 1D Testcase 6: Non-compliant value.
+
+#################### 1D. 23-01-24 03:29:01 PM #########################
+Subject File: /etc/login.defs
+Key: PASS_MAX_DAYS
+Req 1D Testcase 6: Non-compliant value.
+
+#################### 1D. 23-01-24 03:31:12 PM #########################
+Subject File: /etc/login.defs
+Key: PASS_MAX_DAYS
+Req 1D: PASS
