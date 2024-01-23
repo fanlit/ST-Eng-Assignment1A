@@ -22,7 +22,7 @@ convert(){
 	local SUBJLINE=$1
 	local CHECKED=""
 	# Check and convert HEX -> DECI
-	if [ $( echo "$SUBJLINE" | grep -E -m 1 "^0x[1-9a-fA-F]+" | wc -l) -eq 1 ]
+	if [ $( echo "$SUBJLINE" | grep -E -m 1 "^0x[0-9a-fA-F]+" | wc -l) -eq 1 ]
 	then
         	CHECKED=$(echo "$SUBJLINE" | sed "s/^0x//"| sed "y/abcdef/ABCDEF/")
 		echo "$((16#$CHECKED))"
