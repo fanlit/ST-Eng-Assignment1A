@@ -27,7 +27,6 @@ fi
 #####################
 # 2: File not found #
 #####################
-
 if [ ! -f "$SUBJFILE" ]
 then
         echo "Req $REQ Testcase 2: FAIL: File not found." >> "$STDOUTLOGFILE"

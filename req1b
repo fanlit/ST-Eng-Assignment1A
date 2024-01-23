@@ -28,8 +28,7 @@ fi
 #############################
 # 2: Subject File not Found #
 #############################
-find "$SUBJFILE" &> /dev/null
-if [ "$?" -ne 0 ]
+if [ ! -f "$SUBJFILE" ]
 then
         echo "Req $REQ Testcase 2: Subject file not found." >> "$STDOUTLOGFILE"
 	exit 1
