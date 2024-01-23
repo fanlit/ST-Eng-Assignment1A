@@ -18,4 +18,4 @@ Commit and push
 
 Fetch
 - cd into repo
-- git fetch
+- git pull
