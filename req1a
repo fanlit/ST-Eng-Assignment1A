@@ -7,10 +7,10 @@
 DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='PermitRootLogin'
-STDOUTLOGFILE="req1a_$(date "+%d-%m-%y").log"
-STARTFAIL=0
 REQ='1A'
-echo "" > "$STDOUTLOGFILE"
+STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+STARTFAIL=0
+echo "" >> "$STDOUTLOGFILE"
 echo "#################### $REQ. $(date "+%d-%m-%y %r") #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
@@ -28,10 +28,10 @@ fi
 # 2: File not found #
 #####################
 
-find "$SUBJFILE"
-if [ "$?" -ne 0 ]
+if [ ! -f "$SUBJFILE" ]
 then
         echo "Req $REQ Testcase 2: FAIL: File not found." >> "$STDOUTLOGFILE"
+	exit 1
 fi
 
 ####################
@@ -46,7 +46,8 @@ fi
 ##########################
 # 4: No associated value #
 ##########################
-CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep "^\s*$KEY\s*$" | wc -l)
+# CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep "^\s*$KEY\s*$" | wc -l)
+CMDOUT=$( grep -m 1 "^\s*$KEY\s*$" $SUBJFILE | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
 	echo "Req $REQ Testcase 4: FAIL: No value." >> "$STDOUTLOGFILE"

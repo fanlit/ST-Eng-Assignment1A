@@ -7,9 +7,9 @@
 DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='Protocol'
-STDOUTLOGFILE="req1c_$(date "+%d-%m-%y").log"
-STARTFAIL=0
 REQ='1C'
+STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
 echo "#################### $REQ. $(date "+%d-%m-%y %r") #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
@@ -28,7 +28,6 @@ fi
 #############################
 # 2: Subject File not Found #
 #############################
-find "$SUBJFILE" &> /dev/null
 if [ ! -f "$SUBJFILE" ]
 then
         echo "Req $REQ Testcase 2: Subject file not found." >> "$STDOUTLOGFILE"
