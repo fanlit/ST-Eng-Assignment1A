@@ -27,6 +27,8 @@ fi
 # Command setup #
 #################
 # system accounts: sync, halt , shutdown can be safely put to /sbin/nologin: https://access.redhat.com/solutions/47392
-CMDOUT=$(grep -P "^\s*(.+):x*:\d{1,3}:\d{1,3}:.*:.*:(?!(/usr/sbin|/sbin)/nologin)" /etc/passwd )
-echo "$CMDOUT"
-
+# CMDOUT= $(grep -P "^\s*(.+):x*:\d{1,3}:\d{1,3}:.*:.*:(?!(/usr/sbin/nologin|/sbin/nologin|/bin/false))" $SUBJFILE | grep -P "^\s*(?!(sync|showdown|halt))")
+# CMDOUT=$(grep -P "^\s*.+:x*:((\d{1,3}:\d{1,3})|(65534:65534)):.*:.*:(?!(/usr/sbin/nologin|/sbin/nologin|/bin/false))" $SUBJFILE)
+# echo "$CMDOUT"
+CMDOUT=$(awk -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' || $3 == 65534) && $7!~/^(\/usr)?\/sbin\/nologin$/) { print $1 }' /etc/passwd)
+echo $CMDOUT
