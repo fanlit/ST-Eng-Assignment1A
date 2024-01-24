@@ -93,7 +93,7 @@ CONVERTED=$(convert "$(grep -E -m 1 "^\s*$KEY\s+" $SUBJFILE | awk '{$1=$1};{prin
 ####################
 if [[ $CONVERTED -lt -1 || $CONVERTED -gt 99999 ]]
 then
-	echo "Req $REQ Testcase 5: Invalid key." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 5: Invalid value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 

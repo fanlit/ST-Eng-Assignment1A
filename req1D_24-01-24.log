@@ -53,3 +53,13 @@ Req 1D Testcase 2: Key cannot be found.
 Subject File: /etc/login.defs
 Key: PASS_MAX_DAYS
 Req 1D: PASS
+
+#################### 1D. 24-01-24 08:57:11 AM #########################
+Subject File: /etc/login.defs
+Key: PASS_MAX_DAYS
+Req 1D Testcase 5: Invalid key.
+
+#################### 1D. 24-01-24 08:58:31 AM #########################
+Subject File: /etc/login.defs
+Key: PASS_MAX_DAYS
+Req 1D Testcase 5: Invalid value.

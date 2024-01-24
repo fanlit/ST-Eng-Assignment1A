@@ -69,7 +69,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!yes|no)\s*)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-	echo "Req $REQ Testcase 6: Invalid key." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 6: Invalid value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
