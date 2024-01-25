@@ -54,6 +54,16 @@ then
 	exit 1
 fi
 
+######################
+# 5. Multiple values #
+######################
+CMDOUT=$(grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 |grep -iP "^\s*Protocol\s(-*\S+\s+\S+\s*)" | wc -l)
+if [ "$CMDOUT" -ne 0  ]
+then
+        echo "Req $REQ Testcase 5: FAIL: Multiple values." >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
 ####################
 # 6. Invalid value #
 ####################

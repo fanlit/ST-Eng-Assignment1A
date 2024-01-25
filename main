@@ -2,8 +2,8 @@
 #########
 # Setup #
 #########
-DATETIME=$(date "+%d-%m-%y_%H:%M%p")
-LOGFILE="/home/user/bin/ST-Eng-Assignment1A/logs/Hardening_Check_$DATETIME.log"
+DATETIME=$(date "+%d-%m-%y_%H:%M")
+LOGFILE="$(pwd)/logs/Hardening_Check_$DATETIME.log"
 RESULT=0
 FAILCNT=0
 
