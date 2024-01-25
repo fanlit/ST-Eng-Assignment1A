@@ -8,10 +8,11 @@ DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='PermitEmptyPasswords'
 REQ='1B'
-STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+#STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+STDOUTLOGFILE=$1
 STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. $(date "+%d-%m-%y %r") #########################" >> "$STDOUTLOGFILE"
+echo "#################### $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
@@ -21,7 +22,7 @@ echo "Key: $KEY" >> "$STDOUTLOGFILE"
 systemctl restart sshd &> /dev/null
 if [ "$?" -ne 0 ]
 then
-	echo "Req $REQ Testcase 1: SSH service cannot be started." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 1: FAIL: SSH service cannot be started." >> "$STDOUTLOGFILE"
 	STARTFAIL=1
 fi
 
@@ -30,7 +31,7 @@ fi
 #############################
 if [ ! -f "$SUBJFILE" ]
 then
-        echo "Req $REQ Testcase 2: Subject file not found." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 2: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -39,7 +40,7 @@ fi
 ####################
 if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
-	echo "Req $REQ Testcase 3: Key cannot be found." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 3: FAIL: Key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -49,7 +50,7 @@ fi
 CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -i "^\s*$KEY\s*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-	echo "Req $REQ Testcase 4: No value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 4: FAIL: No value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -59,7 +60,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+.+\s+.+" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-        echo "Req $REQ Testcase 5: Multiple values." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 5: FAIL: Multiple values." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
@@ -69,7 +70,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!yes|no)\s*)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-	echo "Req $REQ Testcase 6: Invalid value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 6: FAIL: Invalid value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -79,7 +80,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!no)\s*)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-        echo "Req $REQ Testcase 7: Non-compliant value." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 7: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
         exit 1
 fi
 

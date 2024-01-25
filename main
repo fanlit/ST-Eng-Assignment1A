@@ -1,0 +1,53 @@
+#!/bin/bash
+#########
+# Setup #
+#########
+DATETIME=$(date "+%d-%m-%y_%H:%M%p")
+LOGFILE="/home/user/bin/ST-Eng-Assignment1A/logs/Hardening_Check_$DATETIME.log"
+RESULT=0
+FAILCNT=0
+
+#####################
+# Utility Functions #
+#####################
+execute() {
+	./$1 "$LOGFILE"
+	FAILCNT=$(($FAILCNT+"$?"))
+}
+
+########################
+# Execute req1a script #
+########################
+execute req1a
+
+########################
+# Execute req1b script #
+########################
+execute req1b
+
+#######################
+# Execute req1c script #
+########################
+execute req1c
+
+########################
+# Execute req1d script #
+########################
+execute req1d
+
+########################
+# Execute req1e script #
+########################
+execute req1e
+
+#######################
+# Evaluate Fail count #
+#######################
+sed -i "1s/^/Failure: $FAILCNT \n/" "$LOGFILE"
+sed -i "1s/^/##################### RESULTS ($DATETIME) #####################\n/" "$LOGFILE"
+
+####################
+# Send Mail report #
+####################
+
+

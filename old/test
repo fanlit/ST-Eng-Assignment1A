@@ -1,0 +1,46 @@
+#!/bin/bash -vx
+SUBJFILE='/etc/login.defs'
+KEY='PASS_MAX_DAYS'
+convert(){
+        # local SUBJLINE=$(grep -E -m 1 "^\s*$KEY\s+" $SUBJFILE | awk '{$1=$1};{print $2}')
+        SUBJLINE=$1
+	local CHECKED=""
+	local locCONVERT=""
+	local ISNEGATIVE=$(echo "$SUBJLINE" | grep -E "^-.*" | wc -l)
+	local VALID=false
+        # Check and convert HEX -> DECI
+        if [ $( echo "$SUBJLINE" | grep -iE "^-*0x[1-9a-f]+$" | wc -l) -eq 1 ]
+        then
+                #CHECKED=$(echo "$SUBJLINE" | sed "s/^-*0[xX]//"| sed "y/abcdef/ABCDEF/")
+		locCONVERT=$((16#$(echo "$SUBJLINE" | sed "s/^-*0[xX]//"| sed "y/abcdef/ABCDEF/")))
+		VALID=true
+
+        # Check and convert OCT -> DECI
+        elif [ $( echo "$SUBJLINE" | grep -E "^-*0[0-7]+$" | wc -l) -eq 1 ]
+        then
+                #CHECKED=$(echo "$SUBJLINE" | sed "s/^-*0//")
+        	locCONVERT=$((8#$(echo "$SUBJLINE" | sed "s/^-*0//")))
+		VALID=true
+	# Check DECI
+        elif [ $( echo "$SUBJLINE" | grep -E "^-*([0-9]{1,})$" | wc -l) -eq 1 ]
+        then
+		locCONVERT=$SUBJLINE
+		VALID=true
+	fi
+
+	# convert to negative if needed.
+	if [ $VALID == true ]
+        then
+		if [ $ISNEGATIVE -eq 1]
+		then
+                	echo "-$(($locCONVERT))"
+		else
+			echo "$(($locCONVERT))"
+		fi
+	else
+		echo "-2"
+        fi
+}
+
+CONVERTED2=$(convert "$(grep -E "^\s*$KEY\s+" $SUBJFILE | tail -1 | awk '{$1=$1};{print $2}')")
+echo "$CONVERTED2"

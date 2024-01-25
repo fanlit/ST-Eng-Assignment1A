@@ -8,10 +8,11 @@ DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY="PermitRootLogin"
 REQ='1A'
-STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+#STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
+STDOUTLOGFILE=$1
 STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. $(date "+%d-%m-%y %r") #########################" >> "$STDOUTLOGFILE"
+echo "#################### $REQ. Ensure SSH root login is disable #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 ##############################

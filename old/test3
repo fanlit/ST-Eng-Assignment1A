@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./req1a "req1A.log"
+echo "$?"
+
