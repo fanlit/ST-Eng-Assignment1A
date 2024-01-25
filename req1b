@@ -12,7 +12,7 @@ REQ='1B'
 STDOUTLOGFILE=$1
 STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
+echo "# $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 

@@ -10,7 +10,7 @@ FORMAT='user:pass:uid:gid:gesoc:home_dir:command/shell'
 REQ='1E'
 STDOUTLOGFILE=$1
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. Ensure system accounts are non-login  #########################" >> "$STDOUTLOGFILE"
+echo "# $REQ. Ensure system accounts are non-login  #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 

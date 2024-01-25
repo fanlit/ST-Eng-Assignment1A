@@ -12,7 +12,7 @@ REQ='1C'
 STDOUTLOGFILE=$1
 STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. Ensure SSH Protocol is set to 2  #########################" >> "$STDOUTLOGFILE"
+echo "# $REQ. Ensure SSH Protocol is set to 2  #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 

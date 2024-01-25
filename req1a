@@ -12,7 +12,7 @@ REQ='1A'
 STDOUTLOGFILE=$1
 STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. Ensure SSH root login is disable #########################" >> "$STDOUTLOGFILE"
+echo "# $REQ. Ensure SSH root login is disable #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 ##############################

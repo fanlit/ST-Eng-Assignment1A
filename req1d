@@ -10,7 +10,7 @@ KEY='PASS_MAX_DAYS'
 REQ='1D'
 STDOUTLOGFILE=$1
 echo "" >> "$STDOUTLOGFILE"
-echo "#################### $REQ. Ensure password expiration is 90 days or less #########################" >> "$STDOUTLOGFILE"
+echo "# $REQ. Ensure password expiration is 90 days or less #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
