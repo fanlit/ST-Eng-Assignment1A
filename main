@@ -49,5 +49,5 @@ sed -i "1s/^/##################### RESULTS ($DATETIME) #####################\n/"
 ####################
 # Send Mail report #
 ####################
-cat "$LOGFILE" | mail -s "RHEL 9 Hardening $DATETIME" fanlit1998@gmail.com
+cat "$LOGFILE" | mail -s "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT" fanlit1998@gmail.com
 
