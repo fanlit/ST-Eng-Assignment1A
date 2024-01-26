@@ -90,7 +90,7 @@ fi
 ######################
 # 4. Multiple values #
 ######################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | tail -1 | grep -E "^\s*$KEY\s(-*.+\s+.+\s*)+$" $SUBJFILE | wc -l)
+CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | tail -1 | grep -E "^\s*$KEY\s+(-*\S+\s+\S+\s*)" $SUBJFILE | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
         echo "Req $REQ Testcase 4: FAIL: Multiple values" >> "$STDOUTLOGFILE"
