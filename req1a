@@ -18,7 +18,7 @@ echo "Key: $KEY" >> "$STDOUTLOGFILE"
 ##############################
 # 1: Check SSH service start #
 ##############################
-systemctl restart sshd &> /dev/null
+sudo systemctl restart sshd &> /dev/null
 if [ "$?" -ne 0 ]
 then
 	echo "Req $REQ Testcase 1: FAIL: SSH service cannot be started." >> "$STDOUTLOGFILE"

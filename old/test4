@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SUBJFILE="/etc/ssh/sshd_config"
+KEY="Protocol"
+
+if grep -E "^\s*$KEY\s+(1|2|(1\s*,\s*2)|(2\s*,\s*1))\s*$" "$SUBJFILE"
+then
+	echo "found!"
+else
+	echo "404"
+fi
