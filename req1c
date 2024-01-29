@@ -47,7 +47,7 @@ fi
 ##########################
 # 4: No associated value #
 ##########################
-CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -i "^\s*$KEY\s*$" | wc -l)
+CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -i "^\s*$KEY\s*(#\s*\S*)*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
 	echo "Req $REQ Testcase 4: FAIL: No value." >> "$STDOUTLOGFILE"
@@ -57,7 +57,7 @@ fi
 ######################
 # 5. Multiple values #
 ######################
-CMDOUT=$(grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 |grep -iP "^\s*Protocol\s(-*\S+\s+\S+\s*)" | wc -l)
+CMDOUT=$(grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 |grep -iP "^\s*$KEY\s+\S+\s+(?!#).+" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
         echo "Req $REQ Testcase 5: FAIL: Multiple values." >> "$STDOUTLOGFILE"
@@ -68,7 +68,7 @@ fi
 # 6. Invalid value #
 ####################
 #CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+[^12]\s*,?\s*[^12]?\s*" | wc -l)
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!(1\s*,\s*2|2\s*,\s*1|1|2)\s*$)" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!(1\s*,\s*2|2\s*,\s*1|1|2)\s*)(#\s*\S*)*" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
 	echo "Req $REQ Testcase 6: FAIL: Invalid value." >> "$STDOUTLOGFILE"
@@ -78,7 +78,7 @@ fi
 ##########################
 # 7. Non-Compliant value #
 ##########################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*$" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*(#\s*\S*)*$" | wc -l)
 if [ ! "$CMDOUT" -ne 0  ]
 then
         echo "Req $REQ Testcase 7: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
@@ -88,7 +88,7 @@ fi
 ######################
 # 8. Compliant value #
 ######################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*$" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+2\s*(#\s*\S*)*$" | wc -l)
 if [[ "$CMDOUT" -ne 0 && $STARTFAIL -ne 1 ]]
 then
         echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"
@@ -99,3 +99,7 @@ if [ "$STARTFAIL" -eq 1 ]
 then
 	exit 1
 fi
+
+# If it comes to this line, it means value input is outside the scope of the testcases
+echo "Req $REQ: FAIL: Unexpected value" >> "$STDOUTLOGFILE"
+exit 1

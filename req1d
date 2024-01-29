@@ -97,7 +97,6 @@ then
         exit 1
 fi
 
-
 ###############################
 # Shared values: Testcase 5-7 #
 ###############################
@@ -129,3 +128,7 @@ then
         echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"
         exit 0
 fi
+
+# If it comes to this line, it means value input is outside the scope of the testcases
+echo "Req $REQ: FAIL: Unexpected value" >> "$STDOUTLOGFILE"
+exit 1

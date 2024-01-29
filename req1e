@@ -5,7 +5,8 @@
 #########
 
 DATETIME=$(date "+%d-%m-%y %r")
-SUBJFILE='/etc/passwd'
+SUBJFILE1='/etc/passwd'
+SUBJFILE2='/etc/login.defs'
 FORMAT='user:pass:uid:gid:gesoc:home_dir:command/shell'
 REQ='1E'
 STDOUTLOGFILE=$1
@@ -17,7 +18,7 @@ echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 #############################
 # 1: Subject file not found #
 #############################
-if [ ! -f "$SUBJFILE" ]
+if [[ ! -f "$SUBJFILE1" || ! -f "$SUBJFILE2" ]]
 then
         echo "Req $REQ Testcase 1: Subject file not found." >> "$STDOUTLOGFILE"
         exit 1
