@@ -12,7 +12,7 @@ touch "$LOGFILE"
 # Utility Functions #
 #####################
 execute() {
-	$(sudo $1 "$LOGFILE")
+	$($1 "$LOGFILE")
 	FAILCNT=$(($FAILCNT+"$?"))
 }
 
