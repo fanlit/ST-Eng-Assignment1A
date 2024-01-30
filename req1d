@@ -33,61 +33,70 @@ then
 fi
 
 #######################################
-# 5: Invalid Value (In-line comments) #
+# 3: Invalid entry (In-line comments) #
 #######################################
 CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | tail -1 | grep -iP "^\s*PASS_MAX_DAYS\s+(#.*)$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-        echo "Req $REQ Testcase 5: FAIL: Invalid value.in-line" >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 3: FAIL: Invalid entry, in-line comments" >> "$STDOUTLOGFILE"
         exit 1
 fi
 
 ##########################
-# 3: No associated value #
+# 4: No associated value #
 ##########################
 CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | tail -1 | grep "^\s*$KEY\s*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-	echo "Req $REQ Testcase 3: FAIL: No value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 4: FAIL: No value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ######################
-# 4. Multiple values #
+# 5. Multiple values #
 ######################
 CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | tail -1 | grep -E "^\s*$KEY\s+(-*\S+\s+\S+\s*)" $SUBJFILE | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-        echo "Req $REQ Testcase 4: FAIL: Multiple values" >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 5: FAIL: Multiple values" >> "$STDOUTLOGFILE"
         exit 1
 fi
 
 ###############################
-# Shared values: Testcase 5-7 #
+# Shared values: Testcase 6-8 #
 ###############################
 TOCONVERT=$(grep -E "^\s*$KEY\s+" $SUBJFILE | tail -1 | awk '{$1=$1};{print $2}')
 CONVERTED=$(printf "%d" $TOCONVERT)
 
-####################################
-# 5. Invalid value (Invalid range) #
-####################################
+###########################################
+# 6a. Invalid Value (Unconvertable value) #
+###########################################
+if [ "$?" -ne 0 ]
+then
+	echo "Req $REQ Testcase 6a: FAIL: Invalid Value (Unconvertable value)" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+#####################################
+# 6b. Invalid value (Invalid range) #
+#####################################
 if [[ $CONVERTED -lt -1 || $CONVERTED -gt 99999 ]]
 then
-	echo "Req $REQ Testcase 5: FAIL: Invalid value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 6b: FAIL: Invalid value (Invalid range)." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ##########################
-# 6. Non-Compliant value #
+# 7. Non-Compliant value #
 ##########################
 if [[ $CONVERTED -eq -1 || $CONVERTED -gt 90 ]]
 then
-        echo "Req $REQ Testcase 6: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 7: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
 ######################
-# 7. Compliant value #
+# 8. Compliant value #
 ######################
 if [[ $CONVERTED -ge 0 && $CONVERTED -le 90 ]]
 then
