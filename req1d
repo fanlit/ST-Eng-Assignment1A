@@ -14,51 +14,6 @@ echo "# $REQ. Ensure password expiration is 90 days or less ####################
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
-#####################
-# Utility Functions #
-#####################
-
-convert(){
-        # local SUBJLINE=$(grep -E -m 1 "^\s*$KEY\s+" $SUBJFILE | awk '{$1=$1};{print $2}')
-        SUBJLINE=$1
-        local CHECKED=""
-        local locCONVERT=""
-	local NOTDECI=true
-        local ISNEGATIVE=$(echo "$SUBJLINE" | grep -E "^-.*" | wc -l)
-        local VALID=false
-        # Check and convert HEX -> DECI
-        if [ $( echo "$SUBJLINE" | grep -iE "^-*0x[0-9a-f]+$" | wc -l) -eq 1 ]
-        then
-                #locCONVERT=$((16#$(echo "$SUBJLINE" | sed "s/0[xX]//"| sed "y/abcdef/ABCDEF/")))
-		locCONVERT=$(printf "%d" "0x5A")
-		VALID=true
-
-        # Check and convert OCT -> DECI
-        elif [ $( echo "$SUBJLINE" | grep -E "^-*0[0-7]+$" | wc -l) -eq 1 ]
-        then
-                locCONVERT=$((8#$(echo "$SUBJLINE" | sed "s/^0//")))
-                VALID=true
-        # Check DECI
-        elif [ $( echo "$SUBJLINE" | grep -E "^-*([0-9]+)$" | wc -l) -eq 1 ]
-        then
-                locCONVERT=$SUBJLINE
-                VALID=true
-		NOTDECI=false
-        fi
-        # Check valid value.
-        if [ $VALID == true ]
-        then
-                if [ $ISNEGATIVE -eq 1 && $NOTDECI]
-                then
-			echo "-$locCONVERT"
-                else
-                        echo "$locCONVERT"
-                fi
-        else
-                echo "-2"
-        fi
-}
-
 #############################
 # 1: Subject file not found #
 #############################
