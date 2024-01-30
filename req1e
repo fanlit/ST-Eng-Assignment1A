@@ -20,7 +20,7 @@ echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 #############################
 if [[ ! -f "$SUBJFILE1" || ! -f "$SUBJFILE2" ]]
 then
-        echo "Req $REQ Testcase 1: Subject file not found." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 1: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
@@ -39,7 +39,7 @@ CMDOUT=$(awk -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3<'"$(awk '/
 
 if ! [[ -z $CMDOUT ]]
 then
-	echo "Req 1E Testcase 2: FAIL: Some system accounts can login!" >> "$STDOUTLOGFILE"
+	echo "Req 1E Testcase 2: FAIL: System account(s) do not have \"nologin\"" >> "$STDOUTLOGFILE"
 	exit 1
 
 else

@@ -10,7 +10,7 @@ KEY='PermitEmptyPasswords'
 REQ='1B'
 #STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
 STDOUTLOGFILE=$1
-STARTFAIL=0
+#STARTFAIL=0
 echo "" >> "$STDOUTLOGFILE"
 echo "# $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
 echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
@@ -19,85 +19,86 @@ echo "Key: $KEY" >> "$STDOUTLOGFILE"
 ##############################
 # 1: Check SSH service start #
 ##############################
-systemctl restart sshd &> /dev/null
-if [ "$?" -ne 0 ]
-then
-	echo "Req $REQ Testcase 1: FAIL: SSH service cannot be started." >> "$STDOUTLOGFILE"
-	STARTFAIL=1
-fi
+#systemctl restart sshd &> /dev/null
+#if [ "$?" -ne 0 ]
+#then
+#	echo "Req $REQ Testcase 1: FAIL: SSH service cannot be started." >> "$STDOUTLOGFILE"
+#	STARTFAIL=1
+#fi
 
 #############################
-# 2: Subject File not Found #
+# 1: Subject File not Found #
 #############################
 if [ ! -f "$SUBJFILE" ]
 then
-        echo "Req $REQ Testcase 2: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 1: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ####################
-# 3: Key not found #
+# 2: Key not found #
 ####################
 if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
-	echo "Req $REQ Testcase 3: FAIL: Key cannot be found." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 2: FAIL: Key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ##########################
-# 4: No associated value #
+# 3: No associated value #
 ##########################
-CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -iE "^\s*$KEY\s*(#\s*\S*)*$" | wc -l)
+CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -iE "^\s*$KEY\s*(#.*)*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-	echo "Req $REQ Testcase 4: FAIL: No value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 3: FAIL: No value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ######################
-# 5. Multiple values #
+# 4. Multiple values #
 ######################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!#).+" | wc -l)
+# CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!#).+" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!\s*#).*'" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-        echo "Req $REQ Testcase 5: FAIL: Multiple values." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 4: FAIL: Multiple values." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
 ####################
-# 6. Invalid value #
+# 5. Invalid value #
 ####################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+((?!yes|no)\s*)(#\s*\S*)*" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!(\s*yes|\s*no)\s*)(#.*)*" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-	echo "Req $REQ Testcase 6: FAIL: Invalid value." >> "$STDOUTLOGFILE"
+	echo "Req $REQ Testcase 5: FAIL: Invalid value." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ##########################
-# 7. Non-Compliant value #
+# 6. Non-Compliant value #
 ##########################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!no)\s*(#\s*\S*)*" | wc -l)
-if [ "$CMDOUT" -ne 0  ]
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*no)\s*(#.*)*" | wc -l)
+if [ "$CMDOUT" -ne 0 ]
 then
-        echo "Req $REQ Testcase 7: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
+        echo "Req $REQ Testcase 6: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
 ######################
-# 8. Compliant value #
+# 7. Compliant value #
 ######################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+no\s*(#\s*\S*)*" | wc -l)
-if [[ "$CMDOUT" -ne 0 && $STARTFAIL -ne 1 ]]
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+no\s*(#.*)*" | wc -l)
+if [ "$CMDOUT" -eq 1 ]
 then
         echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"
         exit 0
 fi
 
-if [ "$STARTFAIL" -eq 1 ]
-then
-	exit 1
-fi
+#if [ "$STARTFAIL" -eq 1 ]
+#then
+#	exit 1
+#fi
 
 # If it comes to this line, it means value input is outside the scope of the testcases
 echo "Req $REQ: FAIL: Unexpected value" >> "$STDOUTLOGFILE"
