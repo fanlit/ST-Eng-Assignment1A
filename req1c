@@ -27,7 +27,7 @@ echo "Key: $KEY" >> "$STDOUTLOGFILE"
 #fi
 
 #############################
-# 1: Subject File not Found #
+# 1: Subject file not Found #
 #############################
 if [ ! -f "$SUBJFILE" ]
 then
@@ -67,7 +67,8 @@ fi
 ####################
 # 5. Invalid value #
 ####################
-CMDOUT=$(grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*(1|1(\s*,\s*1)+|1(\s*,\s*2)+|2|2(\s*,\s*1)+|2(\s*,\s*2)+)\s*(#.*)*$)" | wc -l)
+#CMDOUT=$(grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*(1|1(\s*,\s*1)+|1(\s*,\s*2)+|2|2(\s*,\s*1)+|2(\s*,\s*2)+)\s*(#.*)*$)" | wc -l)
+CMDOUT=$(grep -E "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*(1|1(\s*,\s*(1|2))+|2|2(\s*,\s*(1|2))+)\s*(#.*)*$)" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
 	echo "Req $REQ Testcase 5: FAIL: Invalid value." >> "$STDOUTLOGFILE"

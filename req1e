@@ -16,7 +16,7 @@ echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
 echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 
 #############################
-# 1: Subject file not found #
+# 1: Subject file(s) not found #
 #############################
 if [[ ! -f "$SUBJFILE1" || ! -f "$SUBJFILE2" ]]
 then
