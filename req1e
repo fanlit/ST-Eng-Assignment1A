@@ -12,7 +12,7 @@ REQ='1E'
 STDOUTLOGFILE=$1
 echo "" >> "$STDOUTLOGFILE"
 echo "# $REQ. Ensure system accounts are non-login  #########################" >> "$STDOUTLOGFILE"
-echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
+echo "Subject File(s): $SUBJFILE1, $SUBJFILE2" >> "$STDOUTLOGFILE"
 echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 
 #############################

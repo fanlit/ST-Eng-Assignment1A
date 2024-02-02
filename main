@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -vx
 #########
 # Setup #
 #########
@@ -46,7 +46,6 @@ execute "$SCRIPTPATH/req1e"
 #######################
 sed -i "1s/^/Failure: $FAILCNT|5 \n/" "$LOGFILE"
 sed -i "1s/^/##################### RESULTS ($DATETIME) #####################\n/" "$LOGFILE"
-
 echo "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5"
 cat "$LOGFILE"
 
@@ -55,5 +54,5 @@ cat "$LOGFILE"
 ##############################
 #if [ "$FAILCNT" -gt 0 ]
 #then
-	#cat "$LOGFILE" | mail -s "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" fanlit1998@gmail.com
+#	cat "$LOGFILE" | mail -s "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
 #fi
