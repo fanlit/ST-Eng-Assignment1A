@@ -8,19 +8,19 @@ DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE1='/etc/passwd'
 SUBJFILE2='/etc/login.defs'
 FORMAT='user:pass:uid:gid:gesoc:home_dir:command/shell'
-REQ='1E'
+REQ='1E. Ensure system accounts are non-login'
 STDOUTLOGFILE=$1
-echo "" >> "$STDOUTLOGFILE"
-echo "# $REQ. Ensure system accounts are non-login  #########################" >> "$STDOUTLOGFILE"
-echo "Subject File(s): $SUBJFILE1, $SUBJFILE2" >> "$STDOUTLOGFILE"
-echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
+#echo "" >> "$STDOUTLOGFILE"
+#echo "# $REQ. Ensure system accounts are non-login  #########################" >> "$STDOUTLOGFILE"
+#echo "Subject File(s): $SUBJFILE1, $SUBJFILE2" >> "$STDOUTLOGFILE"
+#echo "Format: $FORMAT" >> "$STDOUTLOGFILE"
 
 #############################
 # 1: Subject file(s) not found #
 #############################
 if [[ ! -f "$SUBJFILE1" || ! -f "$SUBJFILE2" ]]
 then
-        echo "Req $REQ Testcase 1: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
+        echo "[FAIL] $REQ, login.defs not found." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
@@ -39,10 +39,13 @@ CMDOUT=$(awk -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3<'"$(awk '/
 
 if ! [[ -z $CMDOUT ]]
 then
-	echo "Req 1E Testcase 2: FAIL: System account(s) do not have \"nologin\"" >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, System account(s) do not have \"nologin\"" >> "$STDOUTLOGFILE"
 	exit 1
 
 else
-	echo "Req 1E: PASS" >> "$STDOUTLOGFILE"
+#################################
+# 3. Verification returns empty #
+#################################
+	echo "[PASS] $REQ, System accounts(s) do have \"nologin\"" >> "$STDOUTLOGFILE"
 	exit 0
 fi

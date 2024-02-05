@@ -7,31 +7,21 @@
 DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='PermitEmptyPasswords'
-REQ='1B'
+REQ='1B. Ensure SSH PermitEmptyPasswords is disabled'
 #STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
 STDOUTLOGFILE=$1
 #STARTFAIL=0
-echo "" >> "$STDOUTLOGFILE"
-echo "# $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
-echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
-echo "Key: $KEY" >> "$STDOUTLOGFILE"
-
-##############################
-# 1: Check SSH service start #
-##############################
-#systemctl restart sshd &> /dev/null
-#if [ "$?" -ne 0 ]
-#then
-#	echo "Req $REQ Testcase 1: FAIL: SSH service cannot be started." >> "$STDOUTLOGFILE"
-#	STARTFAIL=1
-#fi
+#echo "" >> "$STDOUTLOGFILE"
+#echo "# $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
+#echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
+#echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
 #############################
-# 1: Subject File not Found #
+# 1: Subject File not found #
 #############################
 if [ ! -f "$SUBJFILE" ]
 then
-        echo "Req $REQ Testcase 1: FAIL: Subject file not found." >> "$STDOUTLOGFILE"
+        echo "[FAIL] $REQ, sshd_config not found, SSH cannot be started." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -40,7 +30,7 @@ fi
 ####################
 if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
-	echo "Req $REQ Testcase 2: FAIL: Key cannot be found." >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY key cannot be found, SSH cannot be started." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -50,18 +40,17 @@ fi
 CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | head -1 | grep -iE "^\s*$KEY\s*(#.*)*$" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-	echo "Req $REQ Testcase 3: FAIL: No value." >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY has no value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
 ######################
 # 4. Multiple values #
 ######################
-# CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!#).+" | wc -l)
-CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!\s*#).*'" | wc -l)
+CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | head -1 | grep -iP "^\s*$KEY\s+\S+\s+(?!\s*#)\S+" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-        echo "Req $REQ Testcase 4: FAIL: Multiple values." >> "$STDOUTLOGFILE"
+        echo "[FAIL] $REQ, $KEY has multiple values, SSH cannot be started" >> "$STDOUTLOGFILE"
         exit 1
 fi
 
@@ -71,7 +60,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!(\s*yes|\s*no)\s*)(#.*)*" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-	echo "Req $REQ Testcase 5: FAIL: Invalid value." >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY has an Invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -81,7 +70,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*no)\s*(#.*)*" | wc -l)
 if [ "$CMDOUT" -ne 0 ]
 then
-        echo "Req $REQ Testcase 6: FAIL: Non-compliant value." >> "$STDOUTLOGFILE"
+        echo "[FAIL] $REQ, SSH $KEY is not disabled." >> "$STDOUTLOGFILE"
         exit 1
 fi
 
@@ -91,15 +80,13 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+no\s*(#.*)*" | wc -l)
 if [ "$CMDOUT" -eq 1 ]
 then
-        echo "Req $REQ: PASS" >> "$STDOUTLOGFILE"
+        echo "[PASS] $REQ, SSH $KEY is disabled" >> "$STDOUTLOGFILE"
         exit 0
 fi
 
-#if [ "$STARTFAIL" -eq 1 ]
-#then
-#	exit 1
-#fi
+#######################
+# 8. Unexpected value #
+#######################
 
-# If it comes to this line, it means value input is outside the scope of the testcases
-echo "Req $REQ: FAIL: Unexpected value" >> "$STDOUTLOGFILE"
+echo "[FAIL] $REQ, $KEY has an unexpected value" >> "$STDOUTLOGFILE"
 exit 1

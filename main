@@ -1,4 +1,4 @@
-#!/bin/bash -vx
+#!/bin/bash
 #########
 # Setup #
 #########
@@ -7,7 +7,9 @@ SCRIPTPATH="$( cd -- "$(dirname "$0")" > /dev/null 2>&1 ; pwd -P )"
 LOGFILE="$SCRIPTPATH/logs/Hardening_Check_$DATETIME.log"
 RESULT=0
 FAILCNT=0
+MACHNAME=$(hostname -f)
 touch "$LOGFILE"
+
 #####################
 # Utility Functions #
 #####################
@@ -44,15 +46,15 @@ execute "$SCRIPTPATH/req1e"
 #######################
 # Evaluate Fail count #
 #######################
-sed -i "1s/^/Failure: $FAILCNT|5 \n/" "$LOGFILE"
+sed -i "1s/^/Machine: $MACHNAME       Failure: $FAILCNT|5 \n/" "$LOGFILE"
 sed -i "1s/^/##################### RESULTS ($DATETIME) #####################\n/" "$LOGFILE"
-echo "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5"
+echo "$MACHNAME RHEL 9 CIS Compliance check ($DATETIME), FAILURES: $FAILCNT|5"
 cat "$LOGFILE"
 
 ##############################
 # Send Mail report if errors #
 ##############################
-#if [ "$FAILCNT" -gt 0 ]
-#then
-#	cat "$LOGFILE" | mail -s "RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
-#fi
+if [ "$FAILCNT" -gt 0 ]
+then
+	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
+fi
