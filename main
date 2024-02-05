@@ -2,7 +2,7 @@
 #########
 # Setup #
 #########
-DATETIME=$(date "+%d-%m-%y_%H:%M")
+DATETIME=$(date "+%d-%m-%y_%H:%M:%S")
 SCRIPTPATH="$( cd -- "$(dirname "$0")" > /dev/null 2>&1 ; pwd -P )"
 LOGFILE="$SCRIPTPATH/logs/Hardening_Check_$DATETIME.log"
 RESULT=0
@@ -54,7 +54,7 @@ cat "$LOGFILE"
 ##############################
 # Send Mail report if errors #
 ##############################
-if [ "$FAILCNT" -gt 0 ]
-then
-	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
-fi
+#if [ "$FAILCNT" -gt 0 ]
+#then
+#	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
+#fi

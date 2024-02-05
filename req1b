@@ -30,7 +30,7 @@ fi
 ####################
 if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
-	echo "[FAIL] $REQ, $KEY key cannot be found, SSH cannot be started." >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
@@ -60,7 +60,7 @@ fi
 CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!(\s*yes|\s*no)\s*)(#.*)*" | wc -l)
 if [ "$CMDOUT" -ne 0  ]
 then
-	echo "[FAIL] $REQ, $KEY has an Invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY has an invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1
 fi
 

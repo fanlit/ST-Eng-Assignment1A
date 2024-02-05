@@ -82,7 +82,12 @@ fi
 #####################################
 if [[ $CONVERTED -lt -1 || $CONVERTED -gt 99999 ]]
 then
-	echo "[FAIL] $REQ, $KEY has an invalid value (Invalid range)" >> "$STDOUTLOGFILE"
+	if [ $CONVERTED -lt -1 ]
+	then
+		echo "[FAIL] $REQ, $KEY has an invalid value (Invalid range), default to -1 days" >>  "$STDOUTLOGFILE"
+	else
+		echo "[FAIL] $REQ, $KEY has an invalid value (Invalid range)" >> "$STDOUTLOGFILE"
+	fi
 	exit 1
 fi
 
