@@ -16,6 +16,7 @@ touch "$LOGFILE"
 execute() {
 	$($1 "$LOGFILE")
 	FAILCNT=$(($FAILCNT+"$?"))
+	echo "" >> $LOGFILE
 }
 
 ########################
@@ -54,7 +55,7 @@ cat "$LOGFILE"
 ##############################
 # Send Mail report if errors #
 ##############################
-#if [ "$FAILCNT" -gt 0 ]
-#then
-#	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
-#fi
+if [ "$FAILCNT" -gt 0 ]
+then
+	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
+fi

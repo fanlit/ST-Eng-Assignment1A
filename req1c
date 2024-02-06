@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 #########
 # Setup #
 #########
@@ -30,7 +30,7 @@ fi
 ####################
 if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
 then
-	echo "[FAIL] $REQ, $KEY cannot be found. SSH service cannot be started" >> "$STDOUTLOGFILE"
+	echo "[FAIL] $REQ, $KEY cannot be found" >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
