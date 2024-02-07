@@ -40,7 +40,8 @@ fi
 ######################
 # 5. Multiple values #
 ######################
-if grep -P "^\s*$KEY\s+\S+(?!\s*#\S*)*" $SUBJFILE | tail -1 | grep -qP "^\s*$KEY\s+(\S+\s+(?!\s*#)\S+\s*)";
+# grep non-empty values -> find last entry -> find multiple if any
+if grep -P "^\s*$KEY\s+(?!\s*#)\S+" $SUBJFILE | tail -1 | grep -qP "^\s*$KEY\s+(\S+\s+(?!\s*#)\S+\s*)";
 then
         echo "[FAIL] $REQ, $KEY has multiple values, default to -1 days" >> "$STDOUTLOGFILE"
         exit 1
