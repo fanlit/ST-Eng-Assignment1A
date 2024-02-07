@@ -4,7 +4,6 @@
 # Setup #
 #########
 
-DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/login.defs'
 KEY='PASS_MAX_DAYS'
 REQ='1D. Ensure password expiration is 90 days or less'

@@ -4,17 +4,10 @@
 # Setup #
 #########
 
-DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='Protocol'
 REQ='1C. Ensure SSH Protocol is set to 2'
-# STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
 STDOUTLOGFILE=$1
-#STARTFAIL=0
-#echo "" >> "$STDOUTLOGFILE"
-#echo "# $REQ. Ensure SSH Protocol is set to 2  #########################" >> "$STDOUTLOGFILE"
-#echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
-#echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
 #############################
 # 1: Subject file not found #

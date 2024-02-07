@@ -4,7 +4,6 @@
 # Setup #
 #########
 
-DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY="PermitRootLogin"
 REQ='1A. Ensure SSH root login is disabled'

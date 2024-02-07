@@ -4,7 +4,6 @@
 # Setup #
 #########
 
-DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='PermitEmptyPasswords'
 REQ='1B. Ensure SSH PermitEmptyPasswords is disabled'
