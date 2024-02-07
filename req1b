@@ -8,13 +8,7 @@ DATETIME=$(date "+%d-%m-%y %r")
 SUBJFILE='/etc/ssh/sshd_config'
 KEY='PermitEmptyPasswords'
 REQ='1B. Ensure SSH PermitEmptyPasswords is disabled'
-#STDOUTLOGFILE="req"$REQ"_$(date "+%d-%m-%y").log"
 STDOUTLOGFILE=$1
-#STARTFAIL=0
-#echo "" >> "$STDOUTLOGFILE"
-#echo "# $REQ. Ensure SSH PermitEmptyPasswords is disabled  #########################" >> "$STDOUTLOGFILE"
-#echo "Subject File: $SUBJFILE" >> "$STDOUTLOGFILE"
-#echo "Key: $KEY" >> "$STDOUTLOGFILE"
 
 #############################
 # 1: Subject File not found #
@@ -28,7 +22,7 @@ fi
 ####################
 # 2: Key not found #
 ####################
-if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
+if [ $( grep -i "^\s*$KEY\s*" "$SUBJFILE" ) ]
 then
 	echo "[FAIL] $REQ, $KEY key cannot be found." >> "$STDOUTLOGFILE"
 	exit 1
@@ -37,8 +31,7 @@ fi
 ##########################
 # 3: No associated value #
 ##########################
-CMDOUT=$( grep -i "^\s*$KEY\s*" "$SUBJFILE" | grep -iE "^\s*$KEY\s*(#.*)*$" | wc -l)
-if [ "$CMDOUT" -ne 0 ]
+if [ $( grep -iE "^\s*$KEY\s*(#.*)*$" "$SUBJFILE" ) ]
 then
 	echo "[FAIL] $REQ, $KEY has no value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1
@@ -47,8 +40,7 @@ fi
 ######################
 # 4. Multiple values #
 ######################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | grep -iP "^\s*$KEY\s+\S+\s+(?!\s*#)\S+" | wc -l)
-if [ "$CMDOUT" -ne 0  ]
+if [ $( grep -iP "^\s*$KEY\s+\S+\s+(?!\s*#)\S+" "$SUBJFILE") ]
 then
         echo "[FAIL] $REQ, $KEY has multiple values, SSH cannot be started" >> "$STDOUTLOGFILE"
         exit 1
@@ -57,8 +49,7 @@ fi
 ####################
 # 5. Invalid value #
 ####################
-CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | grep -iPv "^\s*$KEY\s+(yes|no)(\s+#.*)?$" | wc -l)
-if [ "$CMDOUT" -ne 0  ]
+if [ $( grep -iPv "^\s*$KEY\s+(yes|no)(\s+#.*)?$" "$SUBJFILE" ) ]
 then
 	echo "[FAIL] $REQ, $KEY has an invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1

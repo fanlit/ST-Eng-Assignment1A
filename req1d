@@ -22,25 +22,18 @@ fi
 ####################
 # 2: Key not found #
 ####################
-if [ $( grep "^\s*$KEY\s*" "$SUBJFILE" | wc -l) -eq 0 ]
+if [ $(grep "^\s*$KEY\s*" "$SUBJFILE") ]
 then
 	echo "[FAIL] $REQ, $KEY cannot be found, default to -1 days" >> "$STDOUTLOGFILE"
 	exit 1
 fi
 
-#CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | tail -1 | grep -iP "^\s*PASS_MAX_DAYS\s+.*(#.*)$" | wc -l)
-#if [ "$CMDOUT" -ne 0 ]
-#then
-#        echo "[FAIL] $REQ, $KEY has an invalid entry, in-line comments, default to -1 days" >> "$STDOUTLOGFILE"
-#        exit 1
-#fi
-
 ##########################
 # 4: No associated value #
 ##########################
-CMDOUT=$( grep "^\s*$KEY\s*" "$SUBJFILE" | grep -P "^\s*$KEY\s*\S+$" | wc -l)
+#CMDOUT=$( grep -P "^\s*$KEY\s*\S+$" "$SUBJFILE" )
 # not even 1 non-empty value can be found
-if [ "$CMDOUT" -eq 0 ]
+if [ $(grep -P "^\s*$KEY\s*\S+$" "$SUBJFILE") ]
 then
 	echo "[FAIL] $REQ, $KEY has no value, default to -1 days" >> "$STDOUTLOGFILE"
 	exit 1
@@ -49,8 +42,8 @@ fi
 ######################
 # 5. Multiple values #
 ######################
-CMDOUT=$( grep -E "^\s*$KEY\s+" $SUBJFILE | grep -E "^\s*$KEY\s+(-*\S+\s+\S+\s*)" | wc -l)
-if [ "$CMDOUT" -ne 0 ]
+#CMDOUT=$( grep -E "^\s*$KEY\s+(-*\S+\s+\S+\s*)" "$SUBJFILE" )
+if [ $( grep -E "^\s*$KEY\s+(-*\S+\s+\S+\s*)" "$SUBJFILE" ) ]
 then
         echo "[FAIL] $REQ, $KEY has multiple values, default to -1 days" >> "$STDOUTLOGFILE"
         exit 1
@@ -66,6 +59,7 @@ CONVERTED=$(printf "%d" $TOCONVERT)
 #####################
 # 6. Invalid value #
 #####################
+# If conversion has error OR there are in-line comments (#) found -> error, FAIL
 if [[ "$?" -ne 0 || $(grep -P "^\s*PASS_MAX_DAYS\s+.*(#.*)$" $SUBJFILE| wc -l) -gt 1 ]]
 then
 	echo "[FAIL] $REQ, $KEY has an invalid value, default to -1 days" >>  "$STDOUTLOGFILE"
