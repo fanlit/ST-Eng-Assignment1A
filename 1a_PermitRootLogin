@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+#########
+# Setup #
+#########
+
+SUBJFILE='/etc/ssh/sshd_config'
+KEY="PermitRootLogin"
+REQ='1A. Ensure SSH root login is disabled'
+STDOUTLOGFILE=$1
+
+#####################
+# 1: File not found #
+#####################
+if [ ! -f "$SUBJFILE" ]
+then
+        echo "[FAIL] $REQ, sshd_config not found, SSH cannot be started" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+####################
+# 2: Key not found #
+####################
+if ! grep -qi "^\s*$KEY\s*" "$SUBJFILE";
+then
+	echo "[FAIL] $REQ, $KEY key cannot be found" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 3: No associated value #
+##########################
+if grep -qiE "^\s*$KEY\s*(#.*)*$" "$SUBJFILE";
+then
+	echo "[FAIL] $REQ, $KEY has no value, SSH cannot be started" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+######################
+# 4. Multiple values #
+######################
+if grep -qiP "^\s*$KEY\s+\S+\s+(?!\s*#)\S+" "$SUBJFILE";
+then
+        echo "[FAIL] $REQ, $KEY has multiple values, SSH cannot be started" >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+####################
+# 5. Invalid value #
+####################
+if grep -iE "^\s*$KEY\s+" "$SUBJFILE" | grep -qiPv "^\s*$KEY\s+(yes|no|prohibit-password|forced-commands-only)\s*(\s+#.*)?$";
+then
+	echo "[FAIL] $REQ, $KEY has an invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 6. Non-Compliant value #
+##########################
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iP "^\s*$KEY\s+(?!\s*no)\s*(#.*)*" | wc -l)
+if [ "$CMDOUT" -ne 0  ]
+then
+        echo "[FAIL] $REQ, $KEY is not disabled." >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+######################
+# 7. Compliant value #
+######################
+
+CMDOUT=$( grep -iE "^\s*$KEY\s+" $SUBJFILE | head -1 | grep -iE "^\s*$KEY\s+no\s*(#.*)*" | wc -l)
+if [ "$CMDOUT" -eq 1 ]
+then
+        echo "[PASS] $REQ, SSH root login disabled." >> "$STDOUTLOGFILE"
+        exit 0
+fi
+
+#######################
+# 8. Unexpected value #
+#######################
+
+# If it comes to this line, it means value input is outside the scope of the testcases
+echo "[FAIL] $REQ, $KEY has an unexpected value" >> "$STDOUTLOGFILE"
+exit 1

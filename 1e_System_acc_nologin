@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#########
+# Setup #
+#########
+
+SUBJFILE1='/etc/passwd'
+SUBJFILE2='/etc/login.defs'
+FORMAT='user:pass:uid:gid:gesoc:home_dir:command/shell'
+REQ='1E. Ensure system accounts are non-login'
+STDOUTLOGFILE=$1
+
+#############################
+# 1: Subject file(s) not found #
+#############################
+if [[ ! -f "$SUBJFILE1" || ! -f "$SUBJFILE2" ]]
+then
+        echo "[FAIL] $REQ, login.defs not found." >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+#################
+# Command setup #
+#################
+# system accounts: sync, halt , shutdown can be safely put to /sbin/nologin: https://access.redhat.com/solutions/47392
+# CMDOUT= $(grep -P "^\s*(.+):x*:\d{1,3}:\d{1,3}:.*:.*:(?!(/usr/sbin/nologin|/sbin/nologin|/bin/false))" $SUBJFILE | grep -P "^\s*(?!(sync|showdown|halt))")
+# CMDOUT=$(grep -P "^\s*.+:x*:((\d{1,3}:\d{1,3})|(65534:65534)):.*:.*:(?!(/usr/sbin/nologin|/sbin/nologin|/bin/false))" $SUBJFILE)
+# echo "$CMDOUT"
+CMDOUT=$(awk -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' || $3 == 65534) && $7!~/^(\/usr)?\/sbin\/nologin$/) { print $1 }' /etc/passwd)
+
+####################################
+# 2. Check if command is non-empty #
+####################################
+
+if ! [[ -z $CMDOUT ]]
+then
+	echo "[FAIL] $REQ, System account(s) do not have \"nologin\"" >> "$STDOUTLOGFILE"
+	exit 1
+
+else
+#################################
+# 3. Verification returns empty #
+#################################
+	echo "[PASS] $REQ, System accounts(s) do have \"nologin\"" >> "$STDOUTLOGFILE"
+	exit 0
+fi

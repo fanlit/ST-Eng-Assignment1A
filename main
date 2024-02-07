@@ -22,27 +22,27 @@ execute() {
 ########################
 # Execute req1a script #
 ########################
-execute "$SCRIPTPATH/req1a"
+execute "$SCRIPTPATH/1a_PermitRootLogin"
 
 ########################
 # Execute req1b script #
 ########################
-execute "$SCRIPTPATH/req1b"
+execute "$SCRIPTPATH/1b_PermitEmptyPasswords"
 
 #######################
 # Execute req1c script #
 ########################
-execute "$SCRIPTPATH/req1c"
+execute "$SCRIPTPATH/1c_Protocol"
 
 ########################
 # Execute req1d script #
 ########################
-execute "$SCRIPTPATH/req1d"
+execute "$SCRIPTPATH/1d_PASS_MAX_DAYS"
 
 ########################
 # Execute req1e script #
 ########################
-execute "$SCRIPTPATH/req1e"
+execute "$SCRIPTPATH/1e_System_acc_nologin"
 
 #######################
 # Evaluate Fail count #
@@ -55,7 +55,7 @@ cat "$LOGFILE"
 ##############################
 # Send Mail report if errors #
 ##############################
-if [ "$FAILCNT" -gt 0 ]
-then
-	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
-fi
+#if [ "$FAILCNT" -gt 0 ]
+#then
+#	cat "$LOGFILE" | mail -s "$MACHNAME: RHEL 9 Hardening $DATETIME, FAILURES: $FAILCNT|5" justin.gxh98@gmail.com
+#fi

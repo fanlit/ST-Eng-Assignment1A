@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+#########
+# Setup #
+#########
+
+SUBJFILE='/etc/login.defs'
+KEY='PASS_MAX_DAYS'
+REQ='1D. Ensure password expiration is 90 days or less'
+STDOUTLOGFILE=$1
+
+#############################
+# 1: Subject file not found #
+#############################
+if [ ! -f "$SUBJFILE" ]
+then
+        echo "[FAIL] $REQ, login.defs not found." >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+####################
+# 2: Key not found #
+####################
+if ! grep -q "^\s*$KEY\s*" "$SUBJFILE";
+then
+	echo "[FAIL] $REQ, $KEY cannot be found, default to -1 days" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 4: No associated value #
+##########################
+# not even 1 non-empty value can be found
+if ! grep -qP "^\s*$KEY\s+(?!#)\S+" "$SUBJFILE";
+then
+	echo "[FAIL] $REQ, $KEY has no value, default to -1 days" >> "$STDOUTLOGFILE"
+	exit 1
+fi
+
+######################
+# 5. Multiple values #
+######################
+if grep -P "^\s*$KEY\s+\S+" $SUBJFILE | tail -1 | grep -qP "^\s*$KEY\s+(\S+\s+(?!\s*#)\S+\s*)";
+then
+        echo "[FAIL] $REQ, $KEY has multiple values, default to -1 days" >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+###############################
+# Shared values: Testcase 6-8 #
+###############################
+# Finds LAST NON-EMPTY line.
+TOCONVERT=$(grep -E "^\s*$KEY\s+\S+" $SUBJFILE | tail -1 | awk '{$1=$1};{print $2}')
+CONVERTED=$(printf "%d" $TOCONVERT)
+
+#####################
+# 6. Invalid value #
+#####################
+# If conversion has error OR there are in-line comments (#) found -> error, FAIL
+if [[ "$?" -ne 0 || "$(grep -P "^\s*$KEY\s+.*(#.*)$" $SUBJFILE| wc -l)" -gt 1 ]]
+then
+	echo "[FAIL] $REQ, $KEY has an invalid value, default to -1 days" >>  "$STDOUTLOGFILE"
+	exit 1
+fi
+
+if [[ $CONVERTED -lt -1 || $CONVERTED -gt 99999 ]]
+then
+	echo "[FAIL] $REQ, $KEY has an invalid value, default to -1 days" >>  "$STDOUTLOGFILE"
+	exit 1
+fi
+
+##########################
+# 7. Non-Compliant value #
+##########################
+if [[ $CONVERTED -eq -1 || $CONVERTED -gt 90 ]]
+then
+        echo "[FAIL] $REQ, $KEY is not set to 90 days or less" >> "$STDOUTLOGFILE"
+        exit 1
+fi
+
+######################
+# 8. Compliant value #
+######################
+if [[ $CONVERTED -ge 0 && $CONVERTED -le 90 ]]
+then
+        echo "[PASS] $REQ, Password expiration is set to 90 days or less" >> "$STDOUTLOGFILE"
+        exit 0
+fi
+
+#######################
+# 8. Unexpected value #
+#######################
+
+echo "[FAIL] $REQ, $KEY has an unexpected value" >> "$STDOUTLOGFILE"
+exit 1
