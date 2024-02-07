@@ -48,7 +48,7 @@ fi
 ####################
 # 5. Invalid value #
 ####################
-if [ $( grep -iPv "^\s*$KEY\s+(yes|no)(\s+#.*)?$" "$SUBJFILE" ) ]
+if [ $( grep -iE "^\s*$KEY\s+" "$SUBJFILE" | grep -iPv "^\s*$KEY\s+(yes|no)(\s+#.*)?$" "$SUBJFILE" ) ]
 then
 	echo "[FAIL] $REQ, $KEY has an invalid value, SSH cannot be started" >> "$STDOUTLOGFILE"
 	exit 1
