@@ -21,7 +21,7 @@ fi
 ####################
 # 2: Key not found #
 ####################
-if ! grep -q "^\s*$KEY\s*" "$SUBJFILE";
+if ! grep -q "^\s*$KEY($|\s+)" "$SUBJFILE";
 then
 	echo "[FAIL] $REQ, $KEY cannot be found, default to -1 days" >> "$STDOUTLOGFILE"
 	exit 1
